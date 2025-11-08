@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+
+<html lang="id">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Situs Game Valen 🎮</title>
+
+  <style>
+
+    body {
+
+      font-family: Poppins, sans-serif;
+
+      background: #121212;
+
+      color: white;
+
+      text-align: center;
+
+      margin: 0;
+
+      padding: 0;
+
+    }
+
+    header {
+
+      background: #1e1e1e;
+
+      padding: 20px;
+
+      box-shadow: 0 0 10px #0f0;
+
+    }
+
+    h1 {
+
+      color: #0f0;
+
+    }
+
+    .game-list {
+
+      display: flex;
+
+      justify-content: center;
+
+      flex-wrap: wrap;
+
+      margin: 30px;
+
+      gap: 20px;
+
+    }
+
+    .game-card {
+
+      background: #1a1a1a;
+
+      border: 2px solid #0f0;
+
+      border-radius: 15px;
+
+      width: 250px;
+
+      padding: 15px;
+
+      transition: 0.3s;
+
+    }
+
+    .game-card:hover {
+
+      transform: scale(1.05);
+
+      box-shadow: 0 0 15px #0f0;
+
+      cursor: pointer;
+
+    }
+
+    .game-card img {
+
+      width: 100%;
+
+      border-radius: 10px;
+
+    }
+
+    #snakeGame {
+
+      display: none;
+
+      margin-top: 30px;
+
+    }
+
+    canvas {
+
+      background: #000;
+
+      border: 2px solid #0f0;
+
+    }
+
+    .back-btn, .restart-btn {
+
+      display: none;
+
+      margin-top: 20px;
+
+      background: #0f0;
+
+      color: black;
+
+      border: none;
+
+      padding: 10px 20px;
+
+      border-radius: 10px;
+
+      cursor: pointer;
+
+      font-weight: bold;
+
+    }
+
+    .restart-btn {
+
+      margin-right: 10px;
+
+    }
+
+    
+
+  
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 6px;
+  gap: 5px;
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+}
+
+.controls button {
+  width: 55px;
+  height: 55px;
+  font-size: 24px;
+  border-radius: 10px;
+  border: none;
+  background: #0f0;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 0 10px #0f0;
+  transition: 0.15s;
+}
+
+.controls button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 15px #00ff00;
+}
+
+.restart-btn,
+.back-btn {
+  font-size: 22px;
+  width: 55px;
+  height: 55px;
+}
+      
+    
+
+    .controls .row {
+
+      display: flex;
+
+      justify-content: center;
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <header>
+
+    <h1>🎮 Situs Game Valen 🎮</h1>
+
+    <p>Pilih game yang mau kamu mainin, baru satu sih hehe</p>
+
+  </header>
+
+  <div class="game-list">
+
+    <div class="game-card" onclick="startSnake()">
+
+      <img src="images/snake-icon.png" alt="Snake Game">
+
+      <h3>🐍 Snake</h3>
+
+      <p>Tabrakin aja well</p>
+
+    </div>
+
+  </div>
+
+  <div id="snakeGame">
+
+    <h2>🐍 Snake Game</h2>
+
+    <canvas id="game" width="300" height="300"></canvas>
+
+    <p>Gunakan panah ⬅️⬆️⬇️➡️ untuk bergerak</p>
+
+    <div class="controls">
+
+  <div class="row top">
+
+    <button onclick="setDirection('UP')">⬆️</button>
+
+  </div>
+
+  <div class="row middle">
+
+    <button class="restart-btn" onclick="restartSnake()">🔄</button>
+
+    <button onclick="setDirection('LEFT')">⬅️</button>
+
+    <button onclick="togglePause()">⏸️</button>
+
+    <button onclick="setDirection('RIGHT')">➡️</button>
+
+    <button class="back-btn" onclick="goBack()">⬅️</button>
+
+  </div>
+
+  <div class="row bottom">
+
+    <button onclick="setDirection('DOWN')">⬇️</button>
+
+  </div>
+
+</div>
+  
+
+  </div>
+
+  <script>
+
+    const gameMenu = document.querySelector(".game-list");
+
+    const snakeDiv = document.getElementById("snakeGame");
+
+    const backBtn = document.querySelector(".back-btn");
+
+    const restartBtn = document.querySelector(".restart-btn");
+
+    const controls = document.querySelector(".controls");
+
+    const cvs = document.getElementById("game");
+
+    const ctx = cvs.getContext("2d");
+
+    let box = 10;
+
+    let snake = [{ x: 9 * box, y: 10 * box }];
+
+    let food = { x: 5 * box, y: 6 * box };
+
+    let score = 0, d, game;
+
+    // Tambahan untuk level
+
+    let level = 1;
+
+    let speed = 150; // level 1 pelan
+
+    function startSnake() {
+
+      gameMenu.style.display = "none";
+
+      snakeDiv.style.display = "block";
+
+      backBtn.style.display = "inline-block";
+
+      restartBtn.style.display = "inline-block";
+
+      controls.style.display = "block";
+
+      game = setInterval(draw, speed);
+
+    }
+
+    function goBack() {
+
+      clearInterval(game);       // Hentikan game
+
+      // Reset Snake
+
+      snake = [{ x: 9 * box, y: 10 * box }];
+
+      food = { x: 5 * box, y: 6 * box };
+
+      score = 0;
+
+      d = undefined;
+
+      level = 1;
+
+      speed = 150;
+
+      // Sembunyikan game & kontrol
+
+      snakeDiv.style.display = "none";
+
+      controls.style.display = "none";
+
+      backBtn.style.display = "none";
+
+      restartBtn.style.display = "none";
+
+      // Tampilkan menu
+
+      gameMenu.style.display = "flex";
+
+    }
+
+    function restartSnake() {
+
+      clearInterval(game);
+
+      snake = [{ x: 9 * box, y: 10 * box }];
+
+      food = { x: Math.floor(Math.random() * 19) * box, y: Math.floor(Math.random() * 19) * box };
+
+      score = 0;
+
+      d = undefined;
+
+      level = 1;
+
+      speed = 150;
+
+      game = setInterval(draw, speed);
+
+    }
+
+    function setDirection(dir) { d = dir; }
+
+    // Fungsi update kecepatan sesuai level
+
+    function updateSpeed() {
+
+      clearInterval(game);
+
+      if(level === 1) speed = 150; // pelan
+
+      else if(level === 2) speed = 125; // lebih cepat
+      else if(level === 3) speed = 100; // lebih cepat lagi
+      else if(level === 4) speed = 70; // lebih cepat lagi lagi
+      else if(level === 5) speed = 50; //lebih cepat lagi lagi lagi
+
+      game = setInterval(draw, speed);
+
+    }
+
+    document.addEventListener("keydown", e => {
+
+      if (e.key === "ArrowLeft" && d !== "RIGHT") d = "LEFT";
+
+      else if (e.key === "ArrowUp" && d !== "DOWN") d = "UP";
+
+      else if (e.key === "ArrowRight" && d !== "LEFT") d = "RIGHT";
+
+      else if (e.key === "ArrowDown" && d !== "UP") d = "DOWN";
+
+    });
+
+    let paused = false;
+
+function togglePause() {
+
+  if (paused) {
+
+    game = setInterval(draw, 100);
+
+    paused = false;
+
+  } else {
+
+    clearInterval(game);
+
+    paused = true;
+
+  }
+
+}
+    function draw() {
+
+      ctx.fillStyle = "#000";
+
+      ctx.fillRect(0, 0, 300, 300);
+
+      for (let i = 0; i < snake.length; i++) {
+
+        ctx.fillStyle = i === 0 ? "#0f0" : "#090";
+
+        ctx.fillRect(snake[i].x, snake[i].y, box, box);
+
+      }
+
+      ctx.fillStyle = "red";
+
+      ctx.fillRect(food.x, food.y, box, box);
+
+      let x = snake[0].x;
+
+      let y = snake[0].y;
+
+      if (d === "LEFT") x -= box;
+
+      if (d === "UP") y -= box;
+
+      if (d === "RIGHT") x += box;
+
+      if (d === "DOWN") y += box;
+
+      if (x === food.x && y === food.y) {
+
+        score++;
+
+        food = { x: Math.floor(Math.random() * 19) * box, y: Math.floor(Math.random() * 19) * box };
+
+        // Naik ke level 2 saat skor 5
+
+        if(score >= 5 && level === 1) {
+
+          level = 2;
+        
+          updateSpeed();
+        
+        }
+        //Naik ke level 3 saat skor 10     
+       
+        if(score >=10 && level === 2) {
+          
+          level = 3;
+          
+          updateSpeed();
+        
+        }
+        //Naik ke level 4 saat skor 15
+        
+        if(score >=15 && level === 3) {
+        
+          level = 4;
+          
+          updateSpeed();
+          
+          
+         }
+        //Naik ke level 5 saat skor 20
+        
+        if(score >=20 && level === 4) {
+          
+          level = 5;
+          
+          updateSpeed();
+          
+         }
+        
+      } else { snake.pop(); }
+
+      if (x < 0 || x >= 300 || y < 0 || y >= 300 || snake.some(s => s.x === x && s.y === y)) {
+
+        clearInterval(game);
+
+        alert("Game Over! Skor kamu: " + score);
+
+      }
+
+      snake.unshift({ x, y });
+
+      ctx.fillStyle = "#fff";
+
+      ctx.font = "16px Arial";
+
+      ctx.fillText("Skor: " + score, 10, 20);
+
+      ctx.fillText("Level: " + level, 200, 20);
+
+    }
+
+  </script>
+
+</body>
+
+</html>
