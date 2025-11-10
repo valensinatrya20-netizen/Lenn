@@ -1,0 +1,90 @@
+<html>
+  <head>
+    <title>HALO UWAA NANI YANG CANTIKKK</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      body {
+        background-color: black; /* Warna item */
+        overflow: hidden; /* biar hati nggak bikin scrollbar */
+        color: white;
+        text-align: center;
+        font-family: sans-serif;
+      }
+
+      h1 {
+        color: pink;
+      }
+
+      img {
+        width: 200px;
+        height: auto;
+      }
+
+      button {
+        font-size: 20px;
+        padding: 10px 20px;
+        margin: 10px;
+        border-radius: 10px;
+        border: none;
+        background-color: hotpink;
+        color: white;
+      }
+
+      #btn_gamau {
+        position: absolute;
+      }
+
+      /* Efek hati */
+      .heart {
+        position: absolute;
+        color: pink;
+        font-size: 20px;
+        animation: float 4s linear forwards;
+        user-select: none;
+        pointer-events: none;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0) scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-600px) scale(0.5);
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>DARI VALEN</h1>
+    <img src="https://media.tenor.com/h4gJajgeNZUAAAAi/bday.gif" />
+    <h1>SELAMAT ULANG TAHUN UWAAAA</h1>
+  
+    <script>
+      function gamau(id) {
+        var i = Math.floor(Math.random() * window.innerWidth - 100);
+        var j = Math.floor(Math.random() * window.innerHeight - 100);
+        id.style.left = i + "px";
+        id.style.top = j + "px";
+      }
+
+      // Efek love muncul terus
+      setInterval(() => {
+        const heart = document.createElement("div");
+        heart.classList.add("heart");
+        heart.innerHTML = "❤️";
+        heart.style.left = Math.random() * window.innerWidth + "px";
+        heart.style.bottom = "0px";
+        heart.style.fontSize = Math.random() * 20 + 20 + "px";
+        heart.style.color = ["pink", "hotpink", "red", "white"][Math.floor(Math.random() * 4)];
+        document.body.appendChild(heart);
+
+        // hapus setelah animasi selesai
+        setTimeout(() => {
+          heart.remove();
+        }, 4000);
+      }, 300);
+    </script>
+  </body>
+</html>
